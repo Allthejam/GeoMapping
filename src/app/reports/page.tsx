@@ -53,8 +53,9 @@ export default function ReportsVaultPage() {
   const router = useRouter()
   
   const [searchQuery, setSearchQuery] = useState("")
+  const [isTimedOut, setIsTimedOut] = useState(false)
 
-  const userRef = useMemo(() => (db && user && user.uid !== 'demo-user-id' ? doc(db, "users", user.uid) : null), [db, user]);
+  const userRef = useMemo(() => (db && user?.uid && user.uid !== 'demo-user-id' ? doc(db, "users", user.uid) : null), [db, user?.uid]);
   const { data: userProfile } = useDoc(userRef);
 
   useEffect(() => {
@@ -63,16 +64,24 @@ export default function ReportsVaultPage() {
     }
   }, [user, authLoading, router])
 
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsTimedOut(true)
+    }, 4000)
+    return () => clearTimeout(timer)
+  }, [])
+
   const reportsQuery = useMemo(() => {
-    if (!db || !user || user.uid === 'demo-user-id') return null
+    if (!db || !user?.uid || user.uid === 'demo-user-id') return null
     // Explicit sub-collection query
     return query(
       collection(db, "users", user.uid, "siteReports"),
       orderBy("timestamp", "desc")
     )
-  }, [db, user])
+  }, [db, user?.uid])
 
-  const { data: reports, loading: reportsLoading } = useCollection(reportsQuery)
+  const { data: reports, loading: reportsLoading, error: reportsError } = useCollection(reportsQuery)
+  const isActuallyLoading = reportsLoading && !isTimedOut && !reportsError
 
   const filteredReports = useMemo(() => {
     if (!reports) return []
@@ -141,7 +150,7 @@ export default function ReportsVaultPage() {
       </header>
 
       <main className="px-8 pb-24 flex-1">
-        {reportsLoading ? (
+        {isActuallyLoading ? (
           <div className="flex flex-col items-center justify-center py-32 text-muted-foreground gap-4">
             <Loader2 className="h-10 w-10 animate-spin text-primary opacity-20" />
             <p className="text-[10px] font-black uppercase tracking-widest opacity-40">Synchronizing Vault Database...</p>

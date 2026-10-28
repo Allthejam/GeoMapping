@@ -98,8 +98,14 @@ export default function HistoryPage() {
   const [typeFilter, setTypeFilter] = useState<string>("all")
   const [projectFilter, setProjectFilter] = useState<string>("all")
 
-  const userRef = useMemo(() => (db && user && user.uid !== 'demo-user-id' ? doc(db, "users", user.uid) : null), [db, user]);
+  const userRef = useMemo(() => (db && user?.uid && user.uid !== 'demo-user-id' ? doc(db, "users", user.uid) : null), [db, user?.uid]);
   const { data: userProfile, loading: profileLoading } = useDoc(userRef);
+
+  const [isTimedOut, setIsTimedOut] = useState(false)
+  useEffect(() => {
+    const timer = setTimeout(() => setIsTimedOut(true), 4000)
+    return () => clearTimeout(timer)
+  }, [])
 
   const isExpired = useMemo(() => {
     if (!userProfile?.subscriptionExpiry) return false;
@@ -122,15 +128,16 @@ export default function HistoryPage() {
   }, [user, authLoading, router])
 
   const measurementsQuery = useMemo(() => {
-    if (!db || !user || user.uid === 'demo-user-id' || isExpired) return null
+    if (!db || !user?.uid || user.uid === 'demo-user-id' || isExpired) return null
     return query(
       collection(db, "users", user.uid, "measurements"),
       orderBy("timestamp", "desc"),
       limit(200)
     )
-  }, [db, user, isExpired])
+  }, [db, user?.uid, isExpired])
 
   const { data: cloudMeasurements, loading: cloudLoading } = useCollection(measurementsQuery)
+  const isActuallyLoading = cloudLoading && !isTimedOut
 
   const rawData = useMemo(() => {
     if (isExpired) return [];
@@ -196,7 +203,7 @@ export default function HistoryPage() {
     return { gross, working, obstacle, netProductive, efficiency };
   }
 
-  const isLoading = authLoading || profileLoading || (user && user.uid !== 'demo-user-id' && cloudLoading)
+  const isLoading = authLoading || (profileLoading && !isTimedOut) || (user && user.uid !== 'demo-user-id' && isActuallyLoading)
 
   const handleDelete = (id: string) => {
     if (!confirm("Permanently delete this record?")) return;

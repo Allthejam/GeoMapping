@@ -5,7 +5,7 @@ import {
   Firestore, 
   initializeFirestore, 
   persistentLocalCache, 
-  persistentSingleTabManager,
+  persistentMultipleTabManager,
   getFirestore
 } from 'firebase/firestore';
 import { getAuth, Auth } from 'firebase/auth';
@@ -56,7 +56,7 @@ export function initializeFirebase(): {
           // We use the firestoreInstance variable as a strict guard.
           firestoreInstance = initializeFirestore(firebaseAppInstance, {
             localCache: persistentLocalCache({
-              tabManager: persistentSingleTabManager(undefined)
+              tabManager: persistentMultipleTabManager()
             })
           });
         } catch (e) {
