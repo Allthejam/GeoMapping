@@ -6,6 +6,7 @@ import { AppSidebar } from '@/components/layout/AppSidebar';
 import { BottomNav } from '@/components/layout/BottomNav';
 import { FirebaseClientProvider } from '@/firebase';
 import { Toaster } from '@/components/ui/toaster';
+import { ServiceWorkerRegister } from '@/components/pwa/ServiceWorkerRegister';
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://www.gps-mapping.allthejam.co.uk'),
@@ -94,6 +95,7 @@ export default function RootLayout({
             </div>
           </SidebarProvider>
           <Toaster />
+          <ServiceWorkerRegister />
         </FirebaseClientProvider>
       </body>
     </html>

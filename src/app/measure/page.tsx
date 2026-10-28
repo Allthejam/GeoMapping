@@ -38,8 +38,10 @@ import {
   Zap,
   ChevronRight,
   ImageIcon,
-  Type
+  Type,
+  CloudDownload
 } from "lucide-react"
+import { cacheAreaTiles, getCachedTileCount, clearOfflineTileCache } from "@/lib/offline-tiles"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
@@ -111,6 +113,29 @@ export default function MeasurePage() {
 
   const mapContainerRef = useRef<HTMLDivElement>(null)
   const watchIdRef = useRef<number | null>(null)
+
+  const [isCachingTiles, setIsCachingTiles] = useState(false)
+  const [cachedTileCount, setCachedTileCount] = useState<number>(0)
+
+  useEffect(() => {
+    getCachedTileCount().then(setCachedTileCount)
+  }, [isTopPanelVisible])
+
+  const handleCacheArea = async () => {
+    const targetLat = centerPos?.lat || currentPos?.lat || 51.505
+    const targetLng = centerPos?.lng || currentPos?.lng || -0.09
+    setIsCachingTiles(true)
+    toast({ title: "Caching Satellite Tiles", description: "Downloading high-res imagery for offline survey use..." })
+    const result = await cacheAreaTiles(targetLat, targetLng, Math.round(mapZoom), mapType)
+    setIsCachingTiles(false)
+    if (result.success) {
+      const count = await getCachedTileCount()
+      setCachedTileCount(count)
+      toast({ title: "Offline Map Ready", description: `${result.count} imagery tiles saved to local device cache.` })
+    } else {
+      toast({ variant: "destructive", title: "Cache Warning", description: result.error || "Could not pre-cache tiles." })
+    }
+  }
   const router = useRouter()
   const { user, loading: authLoading } = useUser()
   const db = useFirestore()
@@ -432,6 +457,22 @@ export default function MeasurePage() {
                          <Slider value={[mapZoom]} min={1} max={22} step={0.1} onValueChange={([v]) => setMapZoom(v)} className="flex-1" />
                          <Button variant="outline" size="icon" className="h-8 w-8 rounded-lg shrink-0" onClick={() => setMapZoom(prev => Math.min(prev+0.5, 22))}><Plus className="h-4 w-4" /></Button>
                       </div>
+                   </div>
+                   <div className="space-y-2 pt-2 border-t border-border/50">
+                      <div className="flex items-center justify-between text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">
+                         <span>Field Offline Cache</span>
+                         <span className="text-primary font-bold">{cachedTileCount} tiles</span>
+                      </div>
+                      <Button 
+                        variant="secondary" 
+                        size="sm" 
+                        className="w-full h-8 text-[10px] font-black uppercase rounded-lg gap-1.5"
+                        onClick={handleCacheArea}
+                        disabled={isCachingTiles}
+                      >
+                        {isCachingTiles ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <CloudDownload className="h-3.5 w-3.5 text-primary" />}
+                        {isCachingTiles ? "Caching Area..." : "Save Area Offline"}
+                      </Button>
                    </div>
                 </div>
              </Card>

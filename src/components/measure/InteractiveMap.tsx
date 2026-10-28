@@ -208,6 +208,7 @@ export default function InteractiveMap({
       >
         <TileLayer
           attribution='&copy; Esri'
+          crossOrigin="anonymous"
           url={mapType === 'satellite' 
             ? "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
             : "https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}"
