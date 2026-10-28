@@ -10,7 +10,11 @@ const STATIC_ASSETS = [
   '/profile',
   '/install',
   '/manifest.webmanifest',
-  '/favicon.ico'
+  '/manifest.json',
+  '/favicon.ico',
+  '/icons/icon-192x192.png',
+  '/icons/icon-512x512.png',
+  '/icons/apple-touch-icon.png'
 ];
 
 // Install event: Pre-cache core app shell

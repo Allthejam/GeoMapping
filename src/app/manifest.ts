@@ -2,23 +2,38 @@ import { MetadataRoute } from 'next'
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: 'GeoMapping - GPS Precision Mapping',
+    name: 'GeoMapping - GPS Precision Land Auditing',
     short_name: 'GeoMapping',
-    description: 'Professional grade GPS measurement for land and distance.',
+    description: 'Professional grade GPS measurement for land, agriculture, and estate audits.',
     start_url: '/',
     display: 'standalone',
-    background_color: '#ffffff',
+    orientation: 'portrait',
+    background_color: '#070D1E',
     theme_color: '#2D5BFF',
     icons: [
       {
-        src: 'https://placehold.co/192x192/2D5BFF/ffffff/png?text=Geo',
+        src: '/icons/icon-192x192.png',
         sizes: '192x192',
         type: 'image/png',
+        purpose: 'any',
       },
       {
-        src: 'https://placehold.co/512x512/2D5BFF/ffffff/png?text=GeoMapping',
+        src: '/icons/icon-512x512.png',
         sizes: '512x512',
         type: 'image/png',
+        purpose: 'any',
+      },
+      {
+        src: '/icons/icon-maskable-192x192.png',
+        sizes: '192x192',
+        type: 'image/png',
+        purpose: 'maskable',
+      },
+      {
+        src: '/icons/icon-maskable-512x512.png',
+        sizes: '512x512',
+        type: 'image/png',
+        purpose: 'maskable',
       },
     ],
   }

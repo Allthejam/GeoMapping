@@ -33,10 +33,10 @@ export const metadata: Metadata = {
     description: 'Professional grade GPS measurement for land and distance audits.',
     images: [
       {
-        url: 'https://picsum.photos/seed/geo-og/1200/630',
+        url: 'https://www.gps-mapping.allthejam.co.uk/og-image.png',
         width: 1200,
         height: 630,
-        alt: 'GeoMapping Mapping Interface Preview',
+        alt: 'GeoMapping - Professional GPS Land Mapping & Auditing',
       },
     ],
   },
@@ -44,10 +44,24 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'GeoMapping - GPS Precision Mapping',
     description: 'Professional grade GPS measurement for land and distance audits.',
-    images: ['https://picsum.photos/seed/geo-og/1200/630'],
+    images: ['https://www.gps-mapping.allthejam.co.uk/og-image.png'],
     creator: '@geomapping',
   },
-  manifest: '/manifest.json',
+  icons: {
+    icon: [
+      { url: '/favicon.ico' },
+      { url: '/icons/favicon-16x16.png', sizes: '16x16', type: 'image/png' },
+      { url: '/icons/favicon-32x32.png', sizes: '32x32', type: 'image/png' },
+      { url: '/icons/favicon-48x48.png', sizes: '48x48', type: 'image/png' },
+    ],
+    apple: [
+      { url: '/icons/apple-touch-icon.png', sizes: '180x180', type: 'image/png' },
+      { url: '/icons/apple-touch-icon-152x152.png', sizes: '152x152', type: 'image/png' },
+      { url: '/icons/apple-touch-icon-167x167.png', sizes: '167x167', type: 'image/png' },
+    ],
+    shortcut: '/favicon.ico',
+  },
+  manifest: '/manifest.webmanifest',
   appleWebApp: {
     capable: true,
     statusBarStyle: 'default',
