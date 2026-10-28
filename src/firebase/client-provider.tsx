@@ -18,17 +18,19 @@ export function FirebaseClientProvider({
     firestore: Firestore | null;
     auth: Auth | null;
     storage: FirebaseStorage | null;
-  } | null>(null);
-
-  const isInitialized = useRef(false);
+  }>(() => {
+    if (typeof window !== 'undefined') {
+      return initializeFirebase();
+    }
+    return { firebaseApp: null, firestore: null, auth: null, storage: null };
+  });
 
   useEffect(() => {
-    if (!isInitialized.current) {
+    if (!instances.auth) {
       const res = initializeFirebase();
       setInstances(res);
-      isInitialized.current = true;
     }
-  }, []);
+  }, [instances.auth]);
 
   return (
     <FirebaseProvider 

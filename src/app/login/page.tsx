@@ -5,6 +5,7 @@ import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { signInWithEmailAndPassword, sendPasswordResetEmail, setPersistence, browserLocalPersistence, browserSessionPersistence } from "firebase/auth"
 import { useAuth, useUser } from "@/firebase"
+import { initializeFirebase } from "@/firebase/init"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card"
@@ -41,18 +42,30 @@ export default function LoginPage() {
     setLoading(true)
     setError(null)
 
-    if (!auth) {
-      setError("Establishing secure connection to authentication gateway...")
+    const activeAuth = auth || initializeFirebase().auth
+
+    if (!activeAuth) {
+      setError("Unable to initialize secure authentication gateway. Please check your network and refresh.")
       setLoading(false)
       return
     }
 
     try {
-      await setPersistence(auth, rememberMe ? browserLocalPersistence : browserSessionPersistence);
-      await signInWithEmailAndPassword(auth, email, password)
+      await setPersistence(activeAuth, rememberMe ? browserLocalPersistence : browserSessionPersistence);
+      await signInWithEmailAndPassword(activeAuth, email, password)
       router.push("/measure")
     } catch (err: any) {
-      setError("Invalid credentials. Please verify your email and password.")
+      if (err.code === 'auth/operation-not-allowed') {
+        setError("Email/Password sign-in is disabled in your Firebase project console. Please enable it under Authentication > Sign-in method.")
+      } else if (err.code === 'auth/user-not-found' || err.code === 'auth/wrong-password' || err.code === 'auth/invalid-credential') {
+        setError("Invalid email or password. Please verify your credentials.")
+      } else if (err.code === 'auth/too-many-requests') {
+        setError("Account temporarily locked due to multiple failed attempts. Please reset your password or try again later.")
+      } else if (err.code === 'auth/network-request-failed') {
+        setError("Network connection error. Please verify your internet connection.")
+      } else {
+        setError(err.message || "Invalid credentials. Please verify your email and password.")
+      }
     } finally {
       setLoading(false)
     }
@@ -68,11 +81,19 @@ export default function LoginPage() {
       return
     }
 
-    if (!auth) return
+    const activeAuth = auth || initializeFirebase().auth
+    if (!activeAuth) {
+      toast({
+        variant: "destructive",
+        title: "Connection Error",
+        description: "Authentication service unavailable. Please check your connection."
+      })
+      return
+    }
 
     setLoading(true)
     try {
-      await sendPasswordResetEmail(auth, email)
+      await sendPasswordResetEmail(activeAuth, email)
       toast({
         title: "Transmission Initiated",
         description: "If an account with this email address exists in our system, a password reset link will be transmitted shortly. Please check your Spam inbox if you have not received it."
@@ -89,7 +110,7 @@ export default function LoginPage() {
         toast({
           variant: "destructive",
           title: "Recovery Error",
-          description: "Could not initiate password reset. Please verify your connection and try again."
+          description: err.message || "Could not initiate password reset. Please verify your connection and try again."
         })
       }
     } finally {

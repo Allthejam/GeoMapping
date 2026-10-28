@@ -2,6 +2,24 @@
 # https://firebase.google.com/docs/app-hosting/configure
 
 runConfig:
-  # Increase this value if you'd like to automatically spin up
-  # more instances in response to increased traffic.
   maxInstances: 1
+
+env:
+  - variable: NEXT_PUBLIC_FIREBASE_API_KEY
+    value: AIzaSyAMtQQejHyWFtrsAjTHnEh9KCojzztwijU
+  - variable: NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN
+    value: studio-187291867-24746.firebaseapp.com
+  - variable: NEXT_PUBLIC_FIREBASE_PROJECT_ID
+    value: studio-187291867-24746
+  - variable: NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET
+    value: studio-187291867-24746.firebasestorage.app
+  - variable: NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID
+    value: "237949144195"
+  - variable: NEXT_PUBLIC_FIREBASE_APP_ID
+    value: "1:237949144195:web:c663fad1fe4c0f973b5fb6"
+  - variable: NEXT_PUBLIC_PAYPAL_CLIENT_ID
+    value: AVmebH-W1J5VRYhOkNWIn0NZIUpzC0VMy6lLdRmw3I5W2uxD1q2zQzWsFFD3GvslsgAS5fQ8C8Ea9iGM
+  - variable: NEXT_PUBLIC_PAYPAL_PLAN_PRO
+    value: P-5PW20780KR577153WNI2D3FQ
+  - variable: NEXT_PUBLIC_PAYPAL_PLAN_ESTATE
+    value: P-93R442660V685214KNI2D2MI

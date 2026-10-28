@@ -5,6 +5,7 @@ import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth"
 import { useAuth, useFirestore, useUser } from "@/firebase"
+import { initializeFirebase } from "@/firebase/init"
 import { doc, setDoc } from "firebase/firestore"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -41,8 +42,11 @@ export default function RegisterPage() {
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault()
     
-    if (!auth || !db) {
-      setError("Establishing secure connection to GeoMapping systems...")
+    const activeAuth = auth || initializeFirebase().auth
+    const activeDb = db || initializeFirebase().firestore
+
+    if (!activeAuth || !activeDb) {
+      setError("Unable to connect to registration services. Please check your network and refresh.")
       return
     }
 
@@ -59,14 +63,14 @@ export default function RegisterPage() {
     setLoading(true)
     setError(null)
     try {
-      const userCredential = await createUserWithEmailAndPassword(auth, email, password)
+      const userCredential = await createUserWithEmailAndPassword(activeAuth, email, password)
       const user = userCredential.user
       
       await updateProfile(user, { displayName: name })
       
       const role = email.toLowerCase() === MASTER_ADMIN_EMAIL.toLowerCase() ? "admin" : "user";
 
-      await setDoc(doc(db, "users", user.uid), {
+      await setDoc(doc(activeDb, "users", user.uid), {
         displayName: name,
         email: email,
         role: role,
