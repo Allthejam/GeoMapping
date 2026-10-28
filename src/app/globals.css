@@ -1,0 +1,174 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 0 0% 0%;
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 0%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 0%;
+    --primary: 227 100% 59%; /* Cobalt Blue #2D5BFF */
+    --primary-foreground: 0 0% 100%;
+    --secondary: 0 0% 0%; /* Jet Black #000000 */
+    --secondary-foreground: 0 0% 100%;
+    --muted: 0 0% 96.1%;
+    --muted-foreground: 0 0% 45.1%;
+    --accent: 227 100% 59%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 0 0% 89.8%;
+    --input: 0 0% 89.8%;
+    --ring: 227 100% 59%;
+    --radius: 0.75rem;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground font-body;
+  }
+}
+
+.map-container {
+  height: calc(100vh - 4rem);
+  width: 100%;
+  position: relative;
+}
+
+/* --- PROFESSIONAL ISO 216 A4 PAGINATION --- */
+.a4-page {
+  width: 210mm;
+  min-height: 297mm;
+  padding: 20mm;
+  margin: 2rem auto;
+  background: white;
+  box-shadow: 0 20px 50px rgba(0,0,0,0.15);
+  box-sizing: border-box;
+  overflow: visible;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  color: black !important;
+}
+
+@media print {
+  @page {
+    size: A4 portrait;
+    margin: 0;
+  }
+
+  /* GLOBAL SCROLLBAR ERADICATION */
+  * {
+    scrollbar-width: none !important;
+    -ms-overflow-style: none !important;
+  }
+  ::-webkit-scrollbar {
+    display: none !important;
+    width: 0 !important;
+    height: 0 !important;
+  }
+
+  /* HIDE INTERFACE ELEMENTS */
+  [data-sidebar="sidebar"],
+  [data-sidebar-rail="true"],
+  .sidebar-inset > header,
+  nav,
+  .bottom-nav,
+  button,
+  footer,
+  .print-hidden {
+    display: none !important;
+    visibility: hidden !important;
+    height: 0 !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  /* UN-FLEX THE LAYOUT TREE - PREVENTS CLIPPING */
+  html, body {
+    height: auto !important;
+    min-height: auto !important;
+    overflow: visible !important;
+    background: white !important;
+    color: black !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  /* ShadCN / NextJS Root Wrappers Reset */
+  .sidebar-inset, 
+  .sidebar-inset > main, 
+  .min-h-screen,
+  [data-sidebar-wrapper="true"],
+  #root,
+  #__next {
+    display: block !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    overflow: visible !important;
+    height: auto !important;
+    min-height: auto !important;
+    width: auto !important;
+    position: static !important;
+    transform: none !important;
+    border: none !important;
+  }
+
+  /* Target the report root */
+  #print-area {
+    display: block !important;
+    visibility: visible !important;
+    width: 210mm !important;
+    margin: 0 auto !important;
+    padding: 0 !important;
+    background: white !important;
+    overflow: visible !important;
+    position: relative !important;
+  }
+  
+  .a4-page {
+    width: 210mm !important;
+    min-height: 297mm !important;
+    height: auto !important; /* Allow growth if content exceeds sheet */
+    padding: 20mm !important;
+    margin: 0 !important;
+    page-break-after: always !important;
+    break-after: page !important;
+    display: block !important; 
+    background: white !important;
+    overflow: visible !important;
+    box-sizing: border-box !important;
+    position: relative !important;
+    box-shadow: none !important;
+    border: none !important;
+  }
+
+  .a4-page:last-child {
+    page-break-after: auto !important;
+    break-after: auto !important;
+  }
+
+  /* Anti-Fragmentation for data blocks */
+  .a4-page .bg-gray-50,
+  .a4-page table,
+  .a4-page .certification-section {
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+  }
+
+  /* Force background colors and text colors for print accuracy */
+  .bg-black { background-color: black !important; }
+  .bg-gray-50 { background-color: #f9fafb !important; }
+  .text-white { color: white !important; }
+  .text-gray-800 { color: #1f2937 !important; }
+  .border-l-8 { border-left-width: 8px !important; }
+  .bg-primary { background-color: hsl(227 100% 59%) !important; }
+  .bg-primary\/5 { background-color: rgba(45, 91, 255, 0.05) !important; }
+}

@@ -1,0 +1,52 @@
+{
+  "placeholderImages": [
+    {
+      "id": "landing-hero",
+      "description": "Professional aerial view of expansive farmland showing boundary lines",
+      "imageUrl": "https://i.postimg.cc/zvsJ488h/Geo-Mapping-Image-8-1.jpg",
+      "imageHint": "farmland aerial"
+    },
+    {
+      "id": "feature-audit",
+      "description": "Satellite map view showing highlighted land parcels and audit data",
+      "imageUrl": "https://picsum.photos/seed/geoaudit/800/600",
+      "imageHint": "satellite map"
+    },
+    {
+      "id": "feature-portfolio",
+      "description": "Satellite overview of multiple holdings showing aggregated data",
+      "imageUrl": "https://picsum.photos/seed/geoportfolio/800/600",
+      "imageHint": "satellite view"
+    },
+    {
+      "id": "feature-ai",
+      "description": "Abstract technological representation of AI analysis over terrain",
+      "imageUrl": "https://picsum.photos/seed/geoai/800/600",
+      "imageHint": "tech terrain"
+    },
+    {
+      "id": "about-mission",
+      "description": "Vast countryside landscape representing large-scale estate management",
+      "imageUrl": "https://picsum.photos/seed/geomission/1200/600",
+      "imageHint": "countryside landscape"
+    },
+    {
+      "id": "about-hierarchy",
+      "description": "Detailed view of field perimeters and internal land structures",
+      "imageUrl": "https://picsum.photos/seed/geolayers/800/800",
+      "imageHint": "field perimeter"
+    },
+    {
+      "id": "field-1",
+      "description": "Aerial view of a green farmland field",
+      "imageUrl": "https://picsum.photos/seed/geo1/1200/800",
+      "imageHint": "farmland aerial"
+    },
+    {
+      "id": "user-avatar",
+      "description": "User profile avatar",
+      "imageUrl": "https://picsum.photos/seed/user/200/200",
+      "imageHint": "user profile"
+    }
+  ]
+}

@@ -1,0 +1,173 @@
+
+{
+  "entities": {
+    "Measurement": {
+      "title": "Measurement Record",
+      "description": "A saved land or distance measurement record.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "siteName": { "type": "string", "description": "The name of the property or farm site." },
+        "title": { "type": "string", "description": "The name given to the specific field or path." },
+        "description": { "type": "string", "description": "Notes about the measurement." },
+        "aiInsight": { "type": "string", "description": "AI-generated agricultural insights for the area." },
+        "type": { "type": "string", "enum": ["area", "line"] },
+        "role": { "type": "string", "enum": ["perimeter", "working", "obstacle"], "description": "The functional role of this measurement in a land audit." },
+        "value": { "type": "number", "description": "The numeric result of the measurement." },
+        "unit": { "type": "string" },
+        "coords": { "type": "array", "items": { "type": "object" } },
+        "labelLat": { "type": "number", "description": "Custom latitude for the map label position." },
+        "labelLng": { "type": "number", "description": "Custom longitude for the map label position." },
+        "viewLat": { "type": "number", "description": "Locked map view latitude." },
+        "viewLng": { "type": "number", "description": "Locked map view longitude." },
+        "viewZoom": { "type": "number", "description": "Locked map view zoom level." },
+        "timestamp": { "type": "string", "format": "date-time" },
+        "locationLabel": { "type": "string" },
+        "imageUrl": { "type": "string", "description": "A satellite or capture image of the measured area." },
+        "fieldPhotoUrl": { "type": "string", "description": "A real-world photo of the field or site taken by the technician." },
+        "boundaryColor": { "type": "string", "description": "Color code for map highlighting." },
+        "classification": { "type": "string", "description": "Custom legend title for this land type (e.g. Silage, Wheat, Carparking)." }
+      },
+      "required": ["title", "type", "value", "coords", "timestamp"]
+    },
+    "SiteSummary": {
+      "title": "Site Management Summary",
+      "description": "Professional overview and management intent for a specific property site.",
+      "type": "object",
+      "properties": {
+        "siteName": { "type": "string" },
+        "currentUsage": { "type": "string", "description": "What the land is currently being used for." },
+        "managementIntent": { "type": "string", "description": "Future plans and goals for the land." },
+        "professionalOverview": { "type": "string", "description": "AI-generated or edited professional summary for reports." },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      }
+    },
+    "SiteReport": {
+      "title": "Historical Site Report",
+      "description": "An archived professional report for a specific site holding.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "siteName": { "type": "string" },
+        "reportTitle": { "type": "string" },
+        "currentUsage": { "type": "string" },
+        "managementIntent": { "type": "string" },
+        "technicianNotes": { "type": "string", "description": "Direct technical surveyor notes for the overall report." },
+        "professionalOverview": { "type": "string" },
+        "mapSnapshotUrl": { "type": "string" },
+        "viewLat": { "type": "number", "description": "Locked map view latitude." },
+        "viewLng": { "type": "number", "description": "Locked map view longitude." },
+        "viewZoom": { "type": "number", "description": "Locked map view zoom level." },
+        "visibleLayerIds": { "type": "array", "items": { "type": "string" }, "description": "The specific layers selected when the report was generated." },
+        "auditData": { "type": "object", "description": "The technical gross/net metrics at the time of archiving." },
+        "timestamp": { "type": "string", "format": "date-time" }
+      },
+      "required": ["reportTitle", "timestamp"]
+    },
+    "UserProfile": {
+      "title": "User Profile",
+      "description": "User account information and preferences.",
+      "type": "object",
+      "properties": {
+        "displayName": { "type": "string" },
+        "email": { "type": "string", "format": "email" },
+        "bio": { "type": "string" },
+        "baseLocation": { "type": "string" },
+        "photoURL": { "type": "string", "description": "URL for the user's profile picture." },
+        "backdropURL": { "type": "string", "description": "URL for the profile page header background." },
+        "ageRange": { "type": "string" },
+        "gender": { "type": "string" },
+        "usageType": { "type": "string", "enum": ["personal", "professional"] },
+        "industry": { "type": "string", "description": "The user's primary professional field." },
+        "preferredAreaUnits": { "type": "array", "items": { "type": "string" }, "description": "Subset of units the user wants to see for area." },
+        "preferredDistanceUnits": { "type": "array", "items": { "type": "string" }, "description": "Subset of units the user wants to see for distance." },
+        "role": { "type": "string", "enum": ["user", "admin"], "description": "The user's access level." },
+        "pinType": { "type": "string", "enum": ["standard", "footprints", "car"] },
+        "pinColor": { "type": "string" },
+        "isFreeAccount": { "type": "boolean", "description": "Admin override for full platform access." },
+        "subscriptionStatus": { "type": "string", "enum": ["free", "pro", "estate"], "description": "The active technical tier." },
+        "lastPaymentType": { "type": "string", "enum": ["subscription", "one-time"] },
+        "lastPaymentDate": { "type": "string", "format": "date-time" },
+        "subscriptionExpiry": { "type": "string", "format": "date-time" },
+        "paypalSubscriptionId": { "type": "string" },
+        "paypalOrderId": { "type": "string" }
+      }
+    },
+    "Message": {
+      "title": "Contact Message",
+      "description": "A message sent via the contact form.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "senderName": { "type": "string" },
+        "senderEmail": { "type": "string", "format": "email" },
+        "subject": { "type": "string" },
+        "message": { "type": "string" },
+        "status": { "type": "string", "enum": ["new", "read", "archived"] },
+        "timestamp": { "type": "string", "format": "date-time" }
+      },
+      "required": ["senderName", "senderEmail", "subject", "message", "timestamp"]
+    },
+    "PricingConfig": {
+      "title": "Pricing Configuration",
+      "description": "Global prices for subscription tiers.",
+      "type": "object",
+      "properties": {
+        "explorer": { "type": "string" },
+        "professional": { "type": "string" },
+        "estate": { "type": "string" }
+      }
+    },
+    "SEOConfig": {
+      "title": "SEO Configuration",
+      "description": "Global search engine optimization and platform asset settings.",
+      "type": "object",
+      "properties": {
+        "title": { "type": "string" },
+        "description": { "type": "string" },
+        "keywords": { "type": "string" },
+        "ogImage": { "type": "string" },
+        "ogImageAlt": { "type": "string" },
+        "twitterHandle": { "type": "string" },
+        "twitterCard": { "type": "string" },
+        "assets": {
+          "type": "object",
+          "description": "Dynamic image assets for the platform marketing pages."
+        }
+      }
+    }
+  },
+  "auth": {
+    "providers": ["password"]
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "UserProfile",
+      "description": "Individual user profile data."
+    },
+    "/users/{userId}/measurements/{measurementId}": {
+      "schema": "Measurement",
+      "description": "A collection of measurements saved by the user."
+    },
+    "/users/{userId}/siteSummaries/{summaryId}": {
+      "schema": "SiteSummary",
+      "description": "Professional site management profiles."
+    },
+    "/users/{userId}/siteReports/{reportId}": {
+      "schema": "SiteReport",
+      "description": "Historical archived site reports."
+    },
+    "/messages/{messageId}": {
+      "schema": "Message",
+      "description": "Global contact messages for support."
+    },
+    "/config/pricing": {
+      "schema": "PricingConfig",
+      "description": "Public pricing information for the landing page."
+    },
+    "/config/seo": {
+      "schema": "SEOConfig",
+      "description": "Public SEO and platform asset configuration."
+    }
+  }
+}
