@@ -122,11 +122,13 @@ export async function POST(req: Request) {
     const targetTier = (planId === estatePlanId) ? 'estate' : 'pro';
 
     switch (eventType) {
-      // SUCCESSFUL PAYMENT / ACTIVATION
+      // SUCCESSFUL PAYMENT / ACTIVATION / RE-ACTIVATION / PLAN CHANGE
       case 'BILLING.SUBSCRIPTION.ACTIVATED':
+      case 'BILLING.SUBSCRIPTION.RE-ACTIVATED':
+      case 'BILLING.SUBSCRIPTION.UPDATED':
       case 'PAYMENT.SALE.COMPLETED':
       case 'CHECKOUT.ORDER.COMPLETED':
-        console.log(`[PayPal Webhook] UPGRADING user ${userId} to ${targetTier.toUpperCase()} tier.`);
+        console.log(`[PayPal Webhook] UPGRADING/SYNCING user ${userId} to ${targetTier.toUpperCase()} tier.`);
         await updateDoc(userRef, {
           subscriptionStatus: targetTier,
           lastPaymentDate: new Date().toISOString(),
@@ -134,12 +136,13 @@ export async function POST(req: Request) {
         });
         break;
 
-      // DENIED / REVERSED / EXPIRED
+      // DENIED / REVERSED / EXPIRED / SUSPENDED / PAYMENT FAILED
       case 'PAYMENT.SALE.DENIED':
       case 'PAYMENT.SALE.REVERSED':
       case 'BILLING.SUBSCRIPTION.CANCELLED':
       case 'BILLING.SUBSCRIPTION.EXPIRED':
       case 'BILLING.SUBSCRIPTION.SUSPENDED':
+      case 'BILLING.SUBSCRIPTION.PAYMENT.FAILED':
       case 'INVOICING.RECURRING-INVOICE.EXPIRED':
         console.log(`[PayPal Webhook] DOWNGRADING user ${userId} due to ${eventType}.`);
         await updateDoc(userRef, {
