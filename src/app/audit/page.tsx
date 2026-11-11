@@ -51,6 +51,7 @@ import { Footer } from "@/components/layout/Footer"
 import { EstateBookReport } from "@/components/audit/EstateBookReport"
 import { FlipBookViewer } from "@/components/audit/FlipBookViewer"
 import { getEstateBookPages } from "@/components/audit/book-pages"
+import { FlipbookHelpDialog } from "@/components/audit/FlipbookHelpDialog"
 import { cn } from "@/lib/utils"
 import { format } from "date-fns"
 import { toast } from "@/hooks/use-toast"
@@ -254,6 +255,7 @@ export default function EstateAuditPage() {
             <p className="text-muted-foreground font-medium max-w-xl">Aggregate and characterize entire estate portfolios across multiple global holdings.</p>
           </div>
           <div className="flex items-center gap-2">
+            <FlipbookHelpDialog />
             <Button variant="outline" className="rounded-xl font-bold h-12" onClick={deselectAll} disabled={selectedProjectNames.length === 0}>
                <RotateCcw className="h-4 w-4 mr-2" /> Reset selection
             </Button>
@@ -453,6 +455,8 @@ export default function EstateAuditPage() {
             <Button variant="secondary" className="rounded-xl font-black uppercase text-[10px] h-11 px-5" onClick={handleArchiveReport} disabled={isArchiving}>
               {isArchiving ? <Loader2 className="h-4 w-4 animate-spin" /> : <Archive className="h-4 w-4 mr-2" />} Save to Vault
             </Button>
+
+            <FlipbookHelpDialog />
           </div>
 
           {/* Conditional View Rendering */}
