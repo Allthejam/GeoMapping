@@ -48,6 +48,7 @@ import { collection, query, orderBy, doc, addDoc, serverTimestamp } from "fireba
 import { ref as storageRef, uploadString, getDownloadURL } from "firebase/storage"
 import { formatArea } from "@/lib/measure-utils"
 import { Footer } from "@/components/layout/Footer"
+import { EstateBookReport } from "@/components/audit/EstateBookReport"
 import { cn } from "@/lib/utils"
 import { format } from "date-fns"
 import { toast } from "@/hooks/use-toast"
@@ -423,7 +424,7 @@ export default function EstateAuditPage() {
             </Button>
           </div>
           <div className="w-full max-w-[210mm] mb-20 space-y-8 animate-in slide-in-from-top-10 duration-1000">
-             <EstateReportContent 
+             <EstateBookReport 
                title={reportTitle} 
                summary={estateSummary} 
                overview={professionalOverview} 
