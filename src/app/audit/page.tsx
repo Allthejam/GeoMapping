@@ -49,6 +49,8 @@ import { ref as storageRef, uploadString, getDownloadURL } from "firebase/storag
 import { formatArea } from "@/lib/measure-utils"
 import { Footer } from "@/components/layout/Footer"
 import { EstateBookReport } from "@/components/audit/EstateBookReport"
+import { FlipBookViewer } from "@/components/audit/FlipBookViewer"
+import { getEstateBookPages } from "@/components/audit/book-pages"
 import { cn } from "@/lib/utils"
 import { format } from "date-fns"
 import { toast } from "@/hooks/use-toast"
@@ -67,6 +69,7 @@ export default function EstateAuditPage() {
   
   const [selectedProjectNames, setSelectedProjectNames] = useState<string[]>([])
   const [showReportPreview, setShowReportPreview] = useState(false)
+  const [viewFormat, setViewFormat] = useState<'a4' | 'flipbook'>('flipbook')
   const [isCapturingMap, setIsCapturingMap] = useState(false)
   const [reportMapImage, setReportMapImage] = useState<string | null>(null)
   
@@ -413,28 +416,75 @@ export default function EstateAuditPage() {
         </main>
       ) : (
         <div className="flex-1 bg-muted/30 p-8 flex flex-col items-center gap-8 overflow-auto">
-          <div className="flex gap-4 print:hidden sticky top-4 z-[120] bg-background/80 backdrop-blur-md p-4 rounded-[2rem] shadow-2xl border border-black/5">
-            <Button variant="outline" className="rounded-xl font-black uppercase text-[10px] h-12 px-8" onClick={() => setShowReportPreview(false)}><ArrowLeft className="h-4 w-4 mr-2" /> Back to Editor</Button>
-            <Button className="rounded-xl font-black uppercase tracking-widest text-[10px] h-12 px-10 shadow-xl gap-2 bg-primary text-white" onClick={() => window.print()}>
-               <Printer className="h-4 w-4" /> Print PDF Audit
+          <div className="flex flex-wrap items-center justify-center gap-3 print:hidden sticky top-4 z-[120] bg-background/90 backdrop-blur-md p-3.5 rounded-[2rem] shadow-2xl border border-black/10">
+            <Button variant="outline" className="rounded-xl font-black uppercase text-[10px] h-11 px-5" onClick={() => setShowReportPreview(false)}>
+              <ArrowLeft className="h-4 w-4 mr-2" /> Back to Editor
             </Button>
-            <div className="h-12 w-px bg-muted mx-2" />
-            <Button variant="secondary" className="rounded-xl font-black uppercase text-[10px] h-12 px-8" onClick={handleArchiveReport} disabled={isArchiving}>
-               {isArchiving ? <Loader2 className="h-4 w-4 animate-spin" /> : <Archive className="h-4 w-4 mr-2" />} Save to Vault
+            
+            {/* View Mode Toggle: Flipbook vs Standard A4 */}
+            <div className="flex items-center bg-muted/60 p-1 rounded-xl border">
+              <Button 
+                variant={viewFormat === 'flipbook' ? "default" : "ghost"} 
+                size="sm" 
+                className="h-9 rounded-lg font-black uppercase text-[10px] gap-1.5"
+                onClick={() => setViewFormat('flipbook')}
+              >
+                <BookOpen className="h-3.5 w-3.5" /> 3D Flipbook
+              </Button>
+              <Button 
+                variant={viewFormat === 'a4' ? "default" : "ghost"} 
+                size="sm" 
+                className="h-9 rounded-lg font-black uppercase text-[10px] gap-1.5"
+                onClick={() => setViewFormat('a4')}
+              >
+                <FileText className="h-3.5 w-3.5" /> A4 Print View
+              </Button>
+            </div>
+
+            <Button className="rounded-xl font-black uppercase tracking-widest text-[10px] h-11 px-6 shadow-xl gap-2 bg-primary text-white" onClick={() => {
+              if (viewFormat !== 'a4') setViewFormat('a4');
+              setTimeout(() => window.print(), 100);
+            }}>
+              <Printer className="h-4 w-4" /> Print / Save PDF
+            </Button>
+            
+            <div className="h-8 w-px bg-muted mx-1 hidden sm:block" />
+            
+            <Button variant="secondary" className="rounded-xl font-black uppercase text-[10px] h-11 px-5" onClick={handleArchiveReport} disabled={isArchiving}>
+              {isArchiving ? <Loader2 className="h-4 w-4 animate-spin" /> : <Archive className="h-4 w-4 mr-2" />} Save to Vault
             </Button>
           </div>
-          <div className="w-full max-w-[210mm] mb-20 space-y-8 animate-in slide-in-from-top-10 duration-1000">
-             <EstateBookReport 
-               title={reportTitle} 
-               summary={estateSummary} 
-               overview={professionalOverview} 
-               unit={preferredUnit} 
-               usage={currentUsage}
-               intent={managementIntent}
-               userName={user?.displayName || "Authorized Agent"}
-               userEmail={user?.email || ""}
-             />
-          </div>
+
+          {/* Conditional View Rendering */}
+          {viewFormat === 'flipbook' ? (
+            <div className="w-full max-w-6xl animate-in zoom-in-95 duration-500">
+              <FlipBookViewer>
+                {getEstateBookPages({
+                  title: reportTitle,
+                  summary: estateSummary,
+                  overview: professionalOverview,
+                  unit: preferredUnit,
+                  usage: currentUsage,
+                  intent: managementIntent,
+                  userName: user?.displayName || "Authorized Agent",
+                  userEmail: user?.email || "",
+                })}
+              </FlipBookViewer>
+            </div>
+          ) : (
+            <div className="w-full max-w-[210mm] mb-20 space-y-8 animate-in slide-in-from-top-10 duration-700">
+              <EstateBookReport 
+                title={reportTitle} 
+                summary={estateSummary} 
+                overview={professionalOverview} 
+                unit={preferredUnit} 
+                usage={currentUsage}
+                intent={managementIntent}
+                userName={user?.displayName || "Authorized Agent"}
+                userEmail={user?.email || ""}
+              />
+            </div>
+          )}
         </div>
       )}
       <Footer />
